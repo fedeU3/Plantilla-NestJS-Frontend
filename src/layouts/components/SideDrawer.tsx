@@ -1,18 +1,17 @@
-import { Drawer as MuiDrawer } from '@mui/material'
+import { Drawer as MuiDrawer } from '@mui/material';
 import { styled, Theme, CSSObject } from '@mui/material/styles';
-import React from 'react'
-import DrawerList from './DrawerList'
+import React from 'react';
+import DrawerList from './DrawerList';
 import { MenuList } from '../types/MenuList';
 
 type SideDrawerProps = {
   menuList: MenuList;
-}
+};
 
 const drawerWidth = 240;
 
 const openedMixin = (theme: Theme): CSSObject => ({
   width: drawerWidth,
-  backgroundColor: '#080808',
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
@@ -22,7 +21,6 @@ const openedMixin = (theme: Theme): CSSObject => ({
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
-  backgroundColor: '#080808',
   transition: theme.transitions.create('width', {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
@@ -59,18 +57,20 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-const SideDrawer: React.FC<SideDrawerProps> = ({
-  menuList,
-}) => {
+const SideDrawer: React.FC<SideDrawerProps> = ({ menuList }) => {
   const [expanded, setExpanded] = React.useState(false);
-  const toggleDrawer = (newExpanded: boolean) => () => {
-    setExpanded(newExpanded);
-  };
-  return (
-    <Drawer variant='permanent' open={expanded} onMouseEnter={toggleDrawer(true)} onMouseLeave={toggleDrawer(false)}>
-      <DrawerList menuList={menuList} expanded={expanded} toggleDrawer={toggleDrawer}/>
-    </Drawer>
-  )
-}
+  const toggleDrawer = (newExpanded: boolean) => () => setExpanded(newExpanded);
 
-export default SideDrawer
+  return (
+    <Drawer
+      variant="permanent"
+      open={expanded}
+      onMouseEnter={toggleDrawer(true)}
+      onMouseLeave={toggleDrawer(false)}
+    >
+      <DrawerList menuList={menuList} expanded={expanded} toggleDrawer={toggleDrawer} />
+    </Drawer>
+  );
+};
+
+export default SideDrawer;

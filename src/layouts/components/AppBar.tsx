@@ -1,6 +1,7 @@
 import React from 'react';
-import { AppBar, Box, Toolbar, Typography, Button } from '@mui/material';
+import { AppBar, Avatar, Box, Button, Toolbar, Typography } from '@mui/material';
 import { useAuthContext } from '../../lib/hooks/contextHooks/useAuthContext';
+import { ROUTES } from '../../lib/constants/routes';
 
 type NavBarProps = {
   goTo: (path: string) => () => void;
@@ -8,114 +9,82 @@ type NavBarProps = {
 };
 
 const NavBar: React.FC<NavBarProps> = ({ goTo, currentPage }) => {
-  const { user } = useAuthContext(); // Obtener la información del usuario
+  const { user } = useAuthContext();
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="fixed" sx={{ backgroundColor: '#2C3E50', zIndex: (theme) => theme.zIndex.drawer + 1  }}>
-        <Toolbar sx={{ justifyContent: 'flex start' }}>
-          {/* Contenedor para el logo y el texto */}
-          <Box display="flex" alignItems="center">
-            {/* Logo */}
-            {/*<Box component="img" src="/LogoFondo.svg" alt="Logo Almacén" sx={{ height: 40, mr: 2 }} />*/}
-            {/* Texto de currentPage */}
-            <Typography variant="h6" component="div">
-              {currentPage}
-            </Typography>
-          </Box>
-
-            <Box
+    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <Toolbar sx={{ justifyContent: 'space-between' }}>
+        {/* Logo + título */}
+        <Box display="flex" alignItems="center" gap={1.5}>
+          {/* Logo placeholder — reemplazar con el logo real del proyecto */}
+          <Box
             sx={{
+              width: 32,
+              height: 32,
+              borderRadius: 1,
+              bgcolor: 'primary.main',
               display: 'flex',
-              flexWrap: 'wrap',
-              justifyContent: 'flex-start',
-              ml: 5,      // 👈 margen izquierdo entre el título y los botones
-              gap: 2,     // opcional: espacio entre botones
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: 700,
+              fontSize: '0.85rem',
+              color: 'primary.contrastText',
+              flexShrink: 0,
             }}
-          ></Box>
-
-          {/* Botones a la derecha */}
-          <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
-            {user ? (
-              <>
-                <Button
-                onClick={goTo('/equipo')}
-                  variant="contained"
-                  sx={{ backgroundColor: '#B0BEC5', color: '#000', border: '1px solid #000',fontSize: '0.9rem', padding: '2px 4px', minWidth: 'auto'}}
-                >
-                  Alquilar Equipo
-                </Button>
-                <Button
-                  onClick={goTo('/')}
-                  sx={{ color: '#B0BEC5', fontSize: '0.9rem', padding: '2x 4px'}}
-                >
-                  Home
-                </Button>
-                  {/* 
-                    <Button
-                        onClick={goTo('/miembros')}
-                        sx={{ color: '#B0BEC5',fontSize: '0.6rem', padding: '2x zpx', minWidth: 'auto'}}
-                      >
-                        Miembros del Equipo
-                    </>
-                  */}                
-                <Button
-                  onClick={goTo('/clientes')}
-                  sx={{ color: '#B0BEC5',fontSize: '0.9em', padding: '2x 4px', minWidth: 'auto'}}
-                >
-                  Clientes
-                </Button>
-                <Button
-                  onClick={goTo('/pedidos')}
-                  sx={{ color: '#B0BEC5',fontSize: '0.9rem', padding: '2x 4px', minWidth: 'auto' }}
-                >
-                  Pedidos
-                </Button>
-                {user.esAdmin && (
-                  <Button
-                    onClick={goTo('/MisPedidos')}
-                    sx={{ color: '#B0BEC5',fontSize: '0.9rem', padding: '2x 4px', minWidth: 'auto'}}
-                  >
-                    Mis pedidos
-                  </Button>
-                )}
-                <Button
-                  onClick={goTo('/usuario')}
-                  variant="contained"
-                  sx={{ backgroundColor: '#FF7043',fontSize: '0.9rem', padding: '2x 4px', minWidth: 'auto', color: '#080808' }}
-                >
-                  Perfil
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button
-                onClick={goTo('/equipo')}
-                  variant="contained"
-                  sx={{ backgroundColor: '#B0BEC5', color: '#000', border: '1px solid #000', mr: 1 }}
-                >
-                  Alquilar Equipo
-                </Button>
-                <Button
-                  onClick={goTo('/login')}
-                  color="inherit"
-                  sx={{ backgroundColor: '#FF7043', border: '1px solid #080808', color: '#080808' }}
-                >
-                  Login
-                </Button>
-                <Button
-                  onClick={goTo('/signup')}
-                  variant="outlined"
-                  sx={{ ml: 1, backgroundColor: '#080808', borderColor: '#FF7043', color: '#FF7043', border: '1px solid #FF7043' }}
-                >
-                  Sign up
-                </Button>
-              </>
-            )}
+          >
+            P
           </Box>
-        </Toolbar>
-      </AppBar>
-    </Box>
+          <Typography variant="h6" fontWeight={600} noWrap>
+            {currentPage || 'Plantilla'}
+          </Typography>
+        </Box>
+
+        {/* Acciones */}
+        <Box display="flex" alignItems="center" gap={1}>
+          {user ? (
+            <>
+              <Avatar
+                sx={{
+                  width: 32,
+                  height: 32,
+                  bgcolor: 'primary.main',
+                  fontSize: '0.85rem',
+                  color: 'primary.contrastText',
+                }}
+              >
+                {user.nombre?.[0]?.toUpperCase()}
+              </Avatar>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ display: { xs: 'none', sm: 'block' } }}
+              >
+                {user.nombre} {user.apellido}
+              </Typography>
+              <Button size="small" onClick={goTo(ROUTES.usuarios.path)}>
+                Perfil
+              </Button>
+              <Button
+                size="small"
+                variant="outlined"
+                onClick={goTo(ROUTES.logout.path)}
+              >
+                Salir
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button size="small" color="inherit" onClick={goTo(ROUTES.login.path)}>
+                Ingresar
+              </Button>
+              <Button size="small" variant="contained" onClick={goTo(ROUTES.signup.path)}>
+                Registrarse
+              </Button>
+            </>
+          )}
+        </Box>
+      </Toolbar>
+    </AppBar>
   );
 };
 

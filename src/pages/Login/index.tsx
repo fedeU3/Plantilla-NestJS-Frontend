@@ -1,148 +1,53 @@
-import { Box, Button, TextField, Typography, Card, CardContent, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Button, Card, CardContent, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuthContext } from '../../lib/hooks/contextHooks/useAuthContext';
 import { LogInFormType } from '../../lib/types/forms/LoginForm';
 
-type LoginProps = {};
-
-const Login: React.FC<LoginProps> = () => {
+const Login: React.FC = () => {
   const { login } = useAuthContext();
-  const {
-    handleSubmit,
-    register,
-  } = useForm<LogInFormType>({
-    defaultValues: {
-      userID: '',
-      password: '',
-      rememberMe: false, // Nuevo campo para "Recuérdame"
-    }
+  const { handleSubmit, register } = useForm<LogInFormType>({
+    defaultValues: { userID: '', password: '' },
   });
 
   return (
     <Box
       sx={{
-        background: "linear-gradient(to bottom, #080808, #2C3E50)",
-        backgroundColor: '#080808',
         minHeight: '100vh',
-        color: '#B0BEC5',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: '2rem',
+        p: '2rem',
+        background: (theme) =>
+          `linear-gradient(to bottom, ${theme.palette.background.default}, ${theme.palette.background.paper})`,
       }}
     >
-      <Card
-        sx={{
-          backgroundColor: '#2C3E50',
-          width: '25rem',
-          padding: '2rem',
-          color: "#B0BEC5",
-          borderRadius: '1rem',
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)',
-        }}
-      >
-        <CardContent>
-          <Typography variant='h4' align='center'  gutterBottom>
-            Login
+      <Card sx={{ width: '25rem' }}>
+        <CardContent sx={{ p: 3 }}>
+          <Typography variant="h4" align="center" gutterBottom fontWeight={600}>
+            Ingresar
           </Typography>
           <Box
-            component={'form'}
+            component="form"
             onSubmit={handleSubmit(login)}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.5rem',
-            }}
+            sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}
           >
             <TextField
-              label='Email'
-              variant='outlined'
+              label="Email / Usuario"
+              variant="outlined"
               fullWidth
               {...register('userID', { required: true })}
-              sx={{
-                backgroundColor: '#151E26',
-                borderRadius: '0.5rem',
-                '& .MuiOutlinedInput-root': {
-                  color: '#B0BEC5',
-                },
-                '& .MuiInputLabel-root': {
-                  color: '#B0BEC5',
-                },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#FF7043',
-                },
-              }}
             />
             <TextField
-              label='Password'
-              variant='outlined'
-              type='password'
+              label="Contraseña"
+              variant="outlined"
+              type="password"
               fullWidth
               {...register('password', { required: true })}
-              sx={{
-                backgroundColor: '#151E26',
-                borderRadius: '0.5rem',
-                '& .MuiOutlinedInput-root': {
-                  color: '#B0BEC5',
-                },
-                '& .MuiInputLabel-root': {
-                  color: '#B0BEC5',
-                },
-                '& .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#FF7043',
-                },
-              }}
             />
-
-            {/* Checkbox para "Recuérdame" */}
-            <FormControlLabel
-              control={
-                <Checkbox
-                  {...register('rememberMe')}
-                  sx={{
-                    color: '#FF7043',
-                    '&.Mui-checked': {
-                      color: '#FF7043',
-                    },
-                  }}
-                />
-              }
-              label="Recuérdame"
-              sx={{ color: '#B0BEC5' }}
-            />
-
-            {/* Botón de Login */}
-            <Button
-              variant='contained'
-              type='submit'
-              sx={{
-                backgroundColor: '#FF7043',
-                color: '#080808',
-                fontWeight: 'bold',
-                '&:hover': {
-                  backgroundColor: '#E64A19',
-                },
-              }}
-            >
-              Login
+            <Button variant="contained" type="submit" fullWidth size="large">
+              Ingresar
             </Button>
-
-            {/* Enlace para "¿Olvidaste tu contraseña?" */}
-            <Typography
-              variant='body2'
-              align='center'
-              sx={{
-                color: '#FF7043',
-                textDecoration: 'underline',
-                cursor: 'pointer',
-                '&:hover': {
-                  color: '#E64A19',
-                },
-              }}
-            >
-              ¿Olvidaste tu contraseña?
-            </Typography>
           </Box>
         </CardContent>
       </Card>

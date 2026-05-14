@@ -5,7 +5,6 @@ import Footer from '../components/Footer';
 import { Box } from '@mui/material';
 import { menuList } from '../constants/menuList';
 import { useNavigate, useLocation } from 'react-router';
-import { useAuthContext } from '../../lib/hooks/contextHooks/useAuthContext';
 
 type AppLayoutProps = {
   children: React.ReactNode;
@@ -17,36 +16,32 @@ type AppLayoutProps = {
 const AppLayout: React.FC<AppLayoutProps> = ({ children, currentPage, isAdmin, isActive }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuthContext(); // Obtener la información del usuario
 
-  const goTo = (url: string) => () => {
-    navigate(url);
-  };
+  const goTo = (url: string) => () => navigate(url);
 
   const menuItems = useMemo(() => {
-    if (isAdmin) {
-      return { ...menuList };
-    }
+    if (isAdmin) return { ...menuList };
     if (isActive) {
       return {
-        top: menuList.top.filter(item => !item.adminOnly),
-        bottom: menuList.bottom.filter(item => !item.adminOnly),
+        top: menuList.top.filter((item) => !item.adminOnly),
+        bottom: menuList.bottom.filter((item) => !item.adminOnly),
       };
     }
     return {
-      top: menuList.top.filter(item => !item.adminOnly && !item.activeOnly),
-      bottom: menuList.bottom.filter(item => !item.adminOnly && !item.activeOnly),
+      top: menuList.top.filter((item) => !item.adminOnly && !item.activeOnly),
+      bottom: menuList.bottom.filter((item) => !item.adminOnly && !item.activeOnly),
     };
-  }, [isAdmin]);
+  }, [isAdmin, isActive]);
+
+  const hideFooter = ['/login', '/logout', '/signup'].includes(location.pathname);
 
   return (
-    <Box id="layout">
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <NavBar currentPage={currentPage} goTo={goTo} />
       <SideDrawer menuList={menuItems} />
-      <Box sx={{ paddingTop: '65px', paddingLeft: '70px' }}>
+      <Box component="main" sx={{ flexGrow: 1, pt: '65px', minWidth: 0 }}>
         {children}
-        {/* Mostrar el footer solo si no es la página de login o logout */}
-        {!['/login', '/logout'].includes(location.pathname) && <Footer />}
+        {!hideFooter && <Footer />}
       </Box>
     </Box>
   );

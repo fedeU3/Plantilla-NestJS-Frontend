@@ -1,197 +1,104 @@
-import React, { useEffect, useState } from "react";
+import React from 'react';
 import {
-  Button,
-  Container,
-  Grid,
+  Avatar,
+  Box,
   Card,
   CardContent,
-  CardMedia,
+  Chip,
+  Container,
+  Divider,
   Typography,
-  IconButton,
-  Box,
-  TextField,
-} from "@mui/material";
+} from '@mui/material';
+import Grid from '@mui/material/Grid2';
+import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+import PersonIcon from '@mui/icons-material/Person';
+import { useAuthContext } from '../../lib/hooks/contextHooks/useAuthContext';
 
-interface IUser {
-  id: number;
-  avatar: string;
-  name: string;
-  position: string;
-  adress: string;
-  bio: string;
-  phone: string;
-  email: string;
-  equipment: string[];
-}
+const Usuario: React.FC = () => {
+  const { user } = useAuthContext();
 
-const fetchCurrentUser = async (): Promise<IUser> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      fetch('/api/usuarioActual')
-      .then(response => response.json())
-      .then(data => {
-        resolve(data);
-      })
-      .catch(error => {
-        console.error('Error al obtener el usuario:', error);
-      resolve({
-        id: 1,
-        avatar: "PlaceholderProfile.jpg",
-        name: "Usuario Ejemplo",
-        position: "Puesto de ejemplo",
-        adress: "Direccion de ejemplo",
-        bio: "Esta es una biografía de ejemplo.",
-        phone: "123-456-7890",
-        email: "usuario@example.com",
-        equipment: ["Cámara", "Micrófono", "Trípode"],
-      });
-      });
-    }, 1000);
-  });
-};
-
-const updateUser = async (user: IUser): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log("Usuario actualizado", user);
-      resolve();
-    }, 500);
-  });
-};
-
-const Usuario = () => {
-  const [user, setUser] = useState<IUser | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [editing, setEditing] = useState(false);
-  const [formData, setFormData] = useState<IUser | null>(null);
-  const [showForm, setShowForm] = useState(false); 
-
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const data = await fetchCurrentUser();
-        setUser(data);
-        setFormData(data);
-      } catch (err) {
-        setError("Error al cargar la información del usuario");
-      }
-    };
-    loadUser();
-  }, []);
-
-  if (error) return <p>{error}</p>;
-  if (!user) return <p>Cargando...</p>;
+  if (!user) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
+        <Typography variant="h6" color="text.secondary">
+          Cargando perfil...
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
-    <Box sx={{minHeight: "100vh", color: "#B0BEC5"}}>
-      <Container sx={{ py: 2 }}>
-        <Card sx={{ backgroundColor: "#151E26", p: 2, borderRadius: 2 }}>
-          <Grid container spacing={2} alignItems="center">
-            <Grid item>
-              <CardMedia
-                component="img"
-                image={user.avatar}
-                alt={user.name}
-                sx={{ width: 100, height: 100, borderRadius: "50%" }}
-              />
-            </Grid>
-            <Grid item>
-              {editing ? (
-                <TextField
-                  fullWidth
-                  label="Nombre"
-                  name="name"
-                  value={formData?.name || ''}
-                  onChange={handleChange}
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-              ) : (
-                <Typography variant="h4" fontWeight="bold">{user.name}</Typography>
-              )}
-              {editing ? (
-                <TextField
-                  fullWidth
-                  label="Puesto o profesion"
-                  name="position"
-                  value={formData?.position || ''}
-                  onChange={handleChange}
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-              ) : (
-                <Typography variant="h5" fontWeight="bold">{user.position}</Typography>
-              )}
-            </Grid>
-            <Grid item xs={12}>
-              {editing ? (
-                <TextField
-                  fullWidth
-                  label="Biografía"
-                  name="bio"
-                  value={formData?.bio || ''}
-                  onChange={handleChange}
-                  variant="outlined"
-                  multiline
-                  rows={4}
-                  sx={{ mb: 2 }}
-                />
-              ) : (
-                <Typography variant="body1">{user.bio}</Typography>
-              )}
-              {editing ? (
-                <TextField
-                  fullWidth
-                  label="Direcion"
-                  name="adress"
-                  value={formData?.adress || ''}
-                  onChange={handleChange}
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-              ) : (
-                <Typography variant="body2" sx={{ mt: 2 }}>
-                  <strong>Direccion:</strong> {user.adress}
+    <Box sx={{ minHeight: '100vh' }}>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Card>
+          <CardContent sx={{ p: 4 }}>
+            <Grid container spacing={3} alignItems="center">
+              <Grid>
+                <Avatar
+                  sx={{
+                    width: 72,
+                    height: 72,
+                    bgcolor: 'primary.main',
+                    fontSize: '1.75rem',
+                    color: 'primary.contrastText',
+                  }}
+                >
+                  {user.nombre?.[0]?.toUpperCase() ?? <PersonIcon />}
+                </Avatar>
+              </Grid>
+              <Grid size="grow">
+                <Typography variant="h4" fontWeight={700}>
+                  {user.nombre} {user.apellido}
                 </Typography>
-              )}
-              {editing ? (
-                <TextField
-                  fullWidth
-                  label="Teléfono"
-                  name="phone"
-                  value={formData?.phone || ''}
-                  onChange={handleChange}
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-              ) : (
-                <Typography variant="body2">
-                  <strong>Teléfono:</strong> {user.phone}
+                <Typography variant="body1" color="text.secondary" sx={{ mt: 0.5 }}>
+                  @{user.userID}
                 </Typography>
-              )}
-              {editing ? (
-                <TextField
-                  fullWidth
-                  label="Email"
-                  name="email"
-                  value={formData?.email || ''}
-                  onChange={handleChange}
-                  variant="outlined"
-                  sx={{ mb: 2 }}
-                />
-              ) : (
-                <Typography variant="body2">
-                  <strong>Email:</strong> {user.email}
-                </Typography>
-              )}
+                <Box display="flex" gap={1} mt={1} flexWrap="wrap">
+                  {user.esAdmin && (
+                    <Chip
+                      icon={<AdminPanelSettingsIcon />}
+                      label="Administrador"
+                      color="primary"
+                      size="small"
+                    />
+                  )}
+                  <Chip
+                    icon={user.isActive ? <CheckCircleIcon /> : <CancelIcon />}
+                    label={user.isActive ? 'Activo' : 'Inactivo'}
+                    color={user.isActive ? 'success' : 'default'}
+                    size="small"
+                  />
+                </Box>
+              </Grid>
             </Grid>
-          </Grid>
+
+            <Divider sx={{ my: 3 }} />
+
+            <Grid container spacing={2}>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="overline" color="text.secondary" display="block">
+                  Dirección
+                </Typography>
+                <Typography variant="body1">{user.direccion || '—'}</Typography>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="overline" color="text.secondary" display="block">
+                  Rol
+                </Typography>
+                <Typography variant="body1">{user.rol || '—'}</Typography>
+              </Grid>
+              <Grid size={{ xs: 12, sm: 6 }}>
+                <Typography variant="overline" color="text.secondary" display="block">
+                  ID de usuario
+                </Typography>
+                <Typography variant="body1">#{user.id}</Typography>
+              </Grid>
+            </Grid>
+          </CardContent>
         </Card>
       </Container>
-
-
-        <Grid container spacing={2}>
-        </Grid>
     </Box>
   );
 };
